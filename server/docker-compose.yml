@@ -1,0 +1,12 @@
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+  nginx:
+    image: nginx:1.25.0
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:z
+    ports:
+      - 80:80
+        
