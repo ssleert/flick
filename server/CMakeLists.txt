@@ -23,9 +23,10 @@ add_compile_options(
     -Wwrite-strings -Wredundant-decls
     -Wmissing-include-dirs -Wno-format-nonliteral
     -fcolor-diagnostics
-    -fexperimental-library
     -Wno-deprecated-declarations
+    "-Wno-#warnings"
 )
+#-fexperimental-library
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_options(
@@ -51,12 +52,16 @@ target_sources(flick PUBLIC
   src/logger.cpp
   src/fcgi_server.cpp
   src/http_router.cpp
-  src/controller_interface.cpp
+  src/http.cpp
   src/routes.cpp
   src/utils.cpp
   src/exceptions.cpp
+  src/vars.cpp
+  src/validate.cpp
+  src/controller_interface.cpp
   src/controller_hello_world.cpp
-  src/controller_register_user.cpp)
+  src/controller_register_user.cpp
+  src/service_add_user.cpp)
 
 target_link_libraries(flick PRIVATE 
                             -lfcgi 

@@ -1,10 +1,10 @@
 FROM ubuntu:devel
-RUN apt update
+RUN apt update --fix-missing
 
-RUN apt install -y clang g++ gcc
+RUN apt install -y clang-18 g++-14 gcc-14
 RUN apt install -y libfcgi libfcgi-dev
 RUN apt install -y cmake ninja-build make
-RUN apt install -y clang-tools
+RUN apt install -y clang-tools-18
 
 COPY ./src/ /app/src
 COPY ./CMakeLists.txt /app
@@ -12,10 +12,10 @@ COPY ./Makefile /app
 
 WORKDIR /app
 
-ENV CXX=clang++
-ENV CC=clang
+ENV CXX=clang++-18
+ENV CC=clang-18
 
-RUN make build-release
+RUN make build-debug
 
 CMD "./flick"
 
