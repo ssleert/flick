@@ -5,5 +5,6 @@ mkShell rec {
   packages = [
     fcgi
     libpqxx
+    openssl
   ];
 }

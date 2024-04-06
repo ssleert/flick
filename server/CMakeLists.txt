@@ -51,12 +51,17 @@ target_sources(flick PUBLIC
   src/logger.cpp
   src/fcgi_server.cpp
   src/http_router.cpp
-  src/controller_interface.cpp)
+  src/controller_interface.cpp
+  src/routes.cpp
+  src/utils.cpp
+  src/exceptions.cpp
+  src/controller_hello_world.cpp
+  src/controller_register_user.cpp)
 
 target_link_libraries(flick PRIVATE 
                             -lfcgi 
-                            nlohmann_json::nlohmann_json
-                            -static-libgcc -static-libstdc++)
+                            nlohmann_json::nlohmann_json)
+                          #-static-libgcc -static-libstdc++)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
   set_target_properties(flick PROPERTIES INTERPROCEDURAL_OPTIMIZATION true)

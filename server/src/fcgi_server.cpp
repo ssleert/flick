@@ -26,28 +26,20 @@ namespace fcgi_server {
         if (libfcgi_inited == false) {
           const int32_t rc = FCGX_Init();
           if (rc < 0) {
-            log_error("libfcgi init error: {}", rc);
             throw std::runtime_error("libfcgi init error");
           }
-          log_trace("libfcgi inited");
         }
-
-        log_trace("fcgi server created");
       }
 
       fn start(const std::string_view socket_str) -> void {
-        log_trace("fcgi server starting");
         if (this->is_working.load() == true) {
-          log_trace("server already started");
           return;
         }
 
         this->socketfd = FCGX_OpenSocket(socket_str.data(), this->backlog_size);
         if (this->socketfd < 0) {
-          log_error("libfcgi OpenSocket failed: {}", this->socketfd);
           throw std::runtime_error("libfcgi OpenSocket failed");
         }
-
 
         this->is_working.store(true);
 
@@ -70,14 +62,11 @@ namespace fcgi_server {
 
     private: 
       fn worker() noexcept -> void {
-        log_trace("worker started");
-
         auto request = FCGX_Request{};
         FCGX_InitRequest(&request, this->socketfd, 0);
 
         while (true) {
           if (this->is_working.load() == false) {
-            log_trace("stoping worker");
             return;
           }
 
@@ -85,7 +74,6 @@ namespace fcgi_server {
           const int32_t rc = FCGX_Accept_r(&request);
           this->connection_mtx.unlock();
           if (rc < 0) {
-            log_error("worker cant accept connection");
             this->stop();
             return;
           }
@@ -94,7 +82,6 @@ namespace fcgi_server {
             this->callback(request);
           } catch (std::exception& err) {
             FCGX_Finish_r(&request);
-            log_warn("worker got unhandled exception");
             log_warn("{}", err.what());
           } catch (...) {
             FCGX_Finish_r(&request);

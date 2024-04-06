@@ -15,7 +15,7 @@ WORKDIR /app
 ENV CXX=clang++
 ENV CC=clang
 
-RUN make build-debug
+RUN make build-release
 
 CMD "./flick"
 

@@ -26,8 +26,6 @@ namespace http_router {
       fn operator()(FCGX_Request& req) -> void { 
         const auto document_uri = std::string_view(FCGX_GetParam("REQUEST_URI", req.envp)); 
 
-        log_trace("{}", document_uri);
-
         size_t matched_amount = 0;
         const std::pair<std::string, RouteHandler> * matched_route = &routes[0];
         for (const auto& route : routes) {
