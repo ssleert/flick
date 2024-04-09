@@ -7,8 +7,6 @@ module;
 #include "logger_macro.hpp"
 #include "flick.hpp"
 
-#include "defer.hpp"
-
 export module controller_register_user;
 
 import logger;
@@ -21,6 +19,9 @@ namespace controller_register_user {
   export template<
     class add_user_service
   > class controller : public controller_interface::controller {
+    private:
+      add_user_service add_user;
+
     public:
       controller() 
         : add_user(add_user_service())
@@ -31,15 +32,6 @@ namespace controller_register_user {
 
         http::status status = http::status::ok;
         auto output_data = typename add_user_service::output(); 
-
-        defered(([&req, &output_data]{
-          utils::write_http_headers(req, utils::custom_http_headers);
-          utils::write_http_headers(req, add_user_service::output::headers());
-
-          utils::start_http_body(req);
-          utils::write_bytes_to_http_request(req, output_data.to_bytes());
-          utils::finish_http_request(req);
-        }));
 
         try {
           const auto input_data = add_user_service::input::from_request(req);
@@ -58,9 +50,13 @@ namespace controller_register_user {
           };
           status = default_exception.status_code;
         }
-      }
 
-    private:
-      add_user_service add_user;
+        utils::write_http_headers(req, utils::custom_http_headers());
+        utils::write_http_headers(req, add_user_service::output::headers());
+
+        utils::start_http_body(req);
+        utils::write_bytes_to_http_request(req, output_data.to_bytes());
+        utils::finish_http_request(req);
+      }
   };
 }

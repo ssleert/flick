@@ -18,9 +18,11 @@ import vars;
 import http;
 
 namespace utils {
-  export const std::vector<http::header> custom_http_headers = {
-    {"x-powered-by", "flick/C++23"}
-  };
+  export constexpr fn custom_http_headers() -> const std::vector<http::header> {
+    return {
+      {"x-powered-by", "flick/C++23"}
+    };
+  }
 
   export fn write_string_to_http_request(
     FCGX_Request& req, 
@@ -30,13 +32,19 @@ namespace utils {
     FCGX_PutStr(data.data(), data.size(), req.out);
   }
 
+  export fn write_http_header(
+    FCGX_Request& req,
+    const http::header& header
+  ) -> void {
+    write_string_to_http_request(req, header.to_string());
+  }
+
   export fn write_http_headers(
     FCGX_Request& req,
     const std::vector<http::header>& http_headers
   ) noexcept -> void {
     for (const auto& header : http_headers) {
-      const auto header_str = header.to_string();
-      write_string_to_http_request(req, header_str);
+      write_http_header(req, header);
     }
   }
 
@@ -100,6 +108,26 @@ namespace utils {
     FCGX_Request& req
   ) -> decltype(get_url_params(std::string_view(""))) {
     return get_url_params(FCGX_GetParam("QUERY_STRING", req.envp));
+  }
+
+  export fn write_not_found(
+    FCGX_Request& req
+  ) -> void {
+    utils::write_http_header(req,
+      http::header("Status", "404")
+    );
+    utils::start_http_body(req);
+    utils::finish_http_request(req);
+  }
+
+  export fn write_method_not_allowed(
+    FCGX_Request& req
+  ) -> void {
+    utils::write_http_header(req,
+      http::header("Status", "405")
+    );
+    utils::start_http_body(req);
+    utils::finish_http_request(req);
   }
 
   export template<

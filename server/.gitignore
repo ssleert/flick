@@ -1,6 +1,8 @@
 build/
 .cache/
 .ccls_cache/
+data/
 compile_commands.json
 flick
+.env
 

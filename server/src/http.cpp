@@ -81,7 +81,7 @@ namespace http {
 
   export class header {
     public:
-      header(const char* key, const char* value)
+      constexpr header(const char* key, const char* value)
         : key(key), value(value)
       {}
 

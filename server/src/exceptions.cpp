@@ -14,6 +14,11 @@ namespace exceptions {
         : std::runtime_error(what_arg), status_code(status_code)
       {}
 
+      wrapped_exception(const char* what_arg)
+        : std::runtime_error(what_arg),
+          status_code(http::status::internal_server_error)
+      {}
+
       wrapped_exception(const std::exception& error)
         : std::runtime_error(error.what()),
           status_code(http::status::internal_server_error)
@@ -44,6 +49,15 @@ namespace exceptions {
         : wrapped_exception(
             "validation error", 
             http::status::unprocessable_entity
+          )
+      {}
+  };
+
+  export class db_error : public wrapped_exception {
+    public:
+      db_error()
+        : wrapped_exception(
+            "database error"
           )
       {}
   };

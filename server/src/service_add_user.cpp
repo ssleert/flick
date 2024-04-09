@@ -6,6 +6,7 @@ module;
 #include "flick.hpp"
 
 #include <vector>
+#include <string>
 #include <string_view>
 
 #include <nlohmann/json.hpp>
@@ -15,8 +16,11 @@ export module service_add_user;
 import utils;
 import logger;
 import http;
+import ttime;
+import db;
 import vars;
 import validate;
+import crypto;
 import exceptions;
 
 using json = nlohmann::json;
@@ -50,41 +54,61 @@ namespace service_add_user {
   export class output {
     public:
       std::string error = "null";
+      int32_t user_id = 0;
 
       fn to_bytes() const -> std::vector<uint8_t> {
         const json data = {
-          {"error", error}
+          {"error", error},
+          {"user_id", user_id}
         };
 
-        const auto str = data.dump();
-        std::vector<uint8_t> vec(str.begin(), str.end());
-        return vec;
+        const auto bin = json::to_msgpack(data);
+        return bin;
       }
 
       static fn headers() -> std::vector<http::header> {
         return { 
-          {"Content-type", "text/json"}
+          {"Content-type", "application/msgpack"}
         };
       }
   };
 
   export template<
     class input_data,
-    class output_data
+    class output_data,
+    class db_impl
   > class service {
+    private:
+      db_impl storage;
+
     public:
       using input = input_data;
       using output = output_data;
 
-      service() {
-        log_trace("service_add_user created");
-      }
+      service()
+        : storage(db_impl())
+      {}
 
       fn invoke(input data) -> output {
         log_trace("email = {}", data.email);
         log_trace("username = {}", data.username);
         log_trace("password = {}", data.password);
-        return output();
+
+        const auto password_hash = crypto::hash_password(data.password);
+
+        const auto user = db::user{
+          .email = data.email,
+          .password_hash = password_hash,
+          .nickname = data.username,
+          .avatar_img = vars::default_avatar_img,
+          .creation_date = ttime::now()
+        };
+
+        const auto user_id = this->storage.add_user(std::move(user));
+
+        return output{
+          .user_id = user_id
+        };
       }
   };
 }

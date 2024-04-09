@@ -7,6 +7,7 @@ module;
 #include <stdexcept>
 #include <atomic>
 #include <mutex>
+#include <chrono>
 
 #include "logger_macro.hpp"
 #include "flick.hpp"
@@ -79,7 +80,11 @@ namespace fcgi_server {
           }
 
           try {
+            const auto start = std::chrono::high_resolution_clock::now();
             this->callback(request);
+            const auto stop = std::chrono::high_resolution_clock::now();
+            const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+            log_trace("execution time in micros: {}", duration.count());
           } catch (std::exception& err) {
             FCGX_Finish_r(&request);
             log_warn("{}", err.what());
