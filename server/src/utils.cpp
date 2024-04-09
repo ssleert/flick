@@ -130,6 +130,17 @@ namespace utils {
     utils::finish_http_request(req);
   }
 
+  export fn write_status(
+    FCGX_Request& req, 
+    http::status status
+  ) -> void {
+    utils::write_http_header(req,
+      http::header("Status", std::to_string(
+        static_cast<int16_t>(status)
+      ).c_str())
+    );
+  }
+
   export template<
     class Container,
     class Value

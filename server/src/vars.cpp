@@ -14,7 +14,7 @@ using namespace std::string_literals;
 namespace vars {
   export {
     constexpr size_t map_prealloc_size = 32;
-    constexpr size_t registration_strings_max_size = 2048;
+    constexpr size_t registration_strings_max_size = 256;
     constexpr size_t registration_strings_min_size = 7;
     constexpr const char* default_avatar_img = "default_avatar";
   }

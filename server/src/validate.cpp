@@ -1,6 +1,7 @@
 module;
 
 #include <string_view>
+#include <algorithm>
 
 #include "flick.hpp"
 
@@ -27,5 +28,26 @@ namespace validate {
       size > vars::registration_strings_max_size ||
       size < vars::registration_strings_min_size 
     );
+  }
+
+  export fn email(const std::string_view str) -> void {
+    if (str.size() > 150) {
+      throw exceptions::malformed_email();
+    }
+
+    const auto at = std::find(str.cbegin(), str.cend(), '@');
+    const auto dot = std::find(at, str.cend(), '.');
+
+    if((at == str.cend()) || (dot == str.cend())) {
+      throw exceptions::malformed_email();
+    }
+
+    if (std::distance(str.cbegin(), at) < 1) {
+      throw exceptions::malformed_email();
+    }
+
+    if(std::distance(at, str.cend()) < 5) {
+      throw exceptions::malformed_email();
+    }
   }
 }

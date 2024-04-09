@@ -51,6 +51,7 @@ namespace controller_register_user {
           status = default_exception.status_code;
         }
 
+        utils::write_status(req, status);
         utils::write_http_headers(req, utils::custom_http_headers());
         utils::write_http_headers(req, add_user_service::output::headers());
 

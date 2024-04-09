@@ -53,6 +53,16 @@ namespace exceptions {
       {}
   };
 
+  export class malformed_email : public wrapped_exception {
+    public:
+      malformed_email()
+        : wrapped_exception(
+            "malformed email", 
+            http::status::unprocessable_entity
+          )
+      {}
+  };
+
   export class db_error : public wrapped_exception {
     public:
       db_error()

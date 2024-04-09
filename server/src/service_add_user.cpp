@@ -43,6 +43,8 @@ namespace service_add_user {
           email, username, password
         );
 
+        validate::email(email);
+
         return input(email, username, password);
       }
 
@@ -53,7 +55,7 @@ namespace service_add_user {
 
   export class output {
     public:
-      std::string error = "null";
+      std::string error = "";
       int32_t user_id = 0;
 
       fn to_bytes() const -> std::vector<uint8_t> {

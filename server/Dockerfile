@@ -20,7 +20,7 @@ ENV CXX=clang++-18
 ENV CC=clang-18
 
 RUN --mount=type=cache,target="/app/build" \
-    make build-release
+    make build-debug
 
 CMD "./flick"
 
