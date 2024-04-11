@@ -11,7 +11,7 @@ module;
 
 #include <nlohmann/json.hpp>
 
-export module service_add_user;
+export module service_login_user;
 
 import utils;
 import logger;
@@ -26,7 +26,7 @@ import exceptions;
 using json = nlohmann::json;
 using namespace std::literals::string_view_literals;
 
-namespace service_add_user {
+namespace service_login_user {
   export class input {
     public:
       static fn from_request(FCGX_Request& req) -> input {
@@ -81,14 +81,14 @@ namespace service_add_user {
     class db_impl
   > class service {
     private:
-      db_impl storage;
+      db_impl& storage;
 
     public:
       using input = input_data;
       using output = output_data;
 
       service()
-        : storage(db_impl())
+        : storage(db_impl::get_instance())
       {}
 
       fn invoke(input data) -> output {

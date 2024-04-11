@@ -70,6 +70,9 @@ namespace db_pg {
     static constexpr size_t connection_pool_size = 4;
 
     static constexpr const char* add_user_stmt = "add_user";
+    static constexpr const char* add_token_stmt = "add_token";
+    static constexpr const char* find_token_id_n_date_by_token_stmt = "find_token_id_n_date_by_token";
+    static constexpr const char* update_token_by_id_stmt = "update_token_by_id";
 
     static fn prepare_add_user(pqxx::connection& c) -> void {
       c.prepare(add_user_stmt, R"(
@@ -82,21 +85,57 @@ namespace db_pg {
       )");
     }
 
+    static fn prepare_add_token(pqxx::connection& c) -> void {
+      c.prepare(add_token_stmt, R"(
+        INSERT INTO users_tokens (
+          user_id, refresh_token, ip_addr, 
+          user_agent, token_date
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING token_id
+      )");
+    }
+
+    static fn prepare_find_token_id_n_date_by_token(pqxx::connection& c) -> void {
+      c.prepare(find_token_id_n_date_by_token_stmt, R"(
+        SELECT token_id, token_date
+        FROM users_tokens
+        WHERE refresh_token = $1
+      )");
+    }
+
+    static fn prepare_update_token_by_id(pqxx::connection& c) -> void {
+      c.prepare(update_token_by_id_stmt, R"(
+        UPDATE users_tokens
+        SET refresh_token = $2,
+            token_date = $3
+        WHERE token_id = $1
+      )");
+    }
+
     static fn init_connection(pqxx::connection& c) -> void {
       prepare_add_user(c);
+      prepare_add_token(c);
+      prepare_find_token_id_n_date_by_token(c);
+      prepare_update_token_by_id(c);
     }
 
     private:
       connection_pool<decltype(init_connection)> pool; 
 
     public:
+      static fn get_instance() -> database& {
+        static database instance;
+        return instance;
+      }
+
       database() 
         : pool(connection_pool<decltype(init_connection)>(
             vars::getenv().pg_connection_string.c_str(),
             connection_pool_size,
             init_connection
           ))
-    {}
+      {}
 
       fn add_user(const db::user& user) -> int32_t {
         try {
@@ -116,6 +155,75 @@ namespace db_pg {
           t.commit();
 
           return user_id;
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn add_token(const db::token& token) -> int32_t {
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          const auto token_id = t.exec_prepared1(add_token_stmt,
+              token.user_id,
+              token.refresh_token,
+              token.ip_addr,
+              token.user_agent,
+              ttime::to_epoch(token.token_date)
+          ).at(0).as<int32_t>();
+
+          t.commit();
+
+          return token_id;
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn find_token_id_n_date_by_token(const std::string_view token) -> db::token_id_n_date { 
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          const auto [id, date_in_ms] = t.exec_prepared1(
+            find_token_id_n_date_by_token_stmt, 
+            token
+          ).as<int32_t, int64_t>();
+
+          t.commit();
+
+          return {id, ttime::from_epoch(date_in_ms)};
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn update_token_by_id(
+        int32_t token_id, 
+        const std::string_view refresh_token,
+        const ttime::point& token_date
+      ) -> void {
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          t.exec_prepared0(update_token_by_id_stmt,
+              token_id,
+              refresh_token,
+              ttime::to_epoch(token_date)
+          );
+
+          t.commit();
         } catch (const std::exception& err) {
           log_warn("db: {}", err.what());
           throw exceptions::db_error();

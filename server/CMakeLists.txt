@@ -36,6 +36,7 @@ else()
   )
 endif()
 
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PQ REQUIRED libpq)
 pkg_check_modules(FCGI REQUIRED fcgi)
@@ -76,10 +77,19 @@ target_sources(flick PUBLIC
   src/db.cpp
   src/db_pg.cpp
   src/get_env.cpp
+
+  src/cache.cpp
+  src/cache_basic.cpp
+  src/auth.cpp
+
   src/controller_interface.cpp
   src/controller_hello_world.cpp
+
   src/controller_register_user.cpp
-  src/service_add_user.cpp)
+  src/service_add_user.cpp
+  
+  src/controller_login_user.cpp
+  src/service_login_user.cpp)
 
 target_link_libraries(flick PRIVATE
                             ${FCGI_LIBRARIES}

@@ -7,7 +7,7 @@ module;
 #include "logger_macro.hpp"
 #include "flick.hpp"
 
-export module controller_register_user;
+export module controller_login_user;
 
 import logger;
 import controller_interface;
@@ -15,7 +15,7 @@ import utils;
 import http;
 import exceptions;
 
-namespace controller_register_user {
+namespace controller_login_user {
   export template<
     class add_user_service
   > class controller : public controller_interface::controller {
@@ -31,7 +31,6 @@ namespace controller_register_user {
         http::status status = http::status::ok;
         auto output_data = typename add_user_service::output(); 
 
-
         const auto handle_exception = [&](auto err){
           output_data = typename add_user_service::output{
             .error = err.what()
@@ -43,8 +42,11 @@ namespace controller_register_user {
           const auto input_data = add_user_service::input::from_request(req);
           output_data = this->add_user.invoke(input_data);
         } catch (const exceptions::wrapped_exception& err) {
-          log_warn("exception: {}", err.what());
+          log_warn("wrapped_exception: {}", err.what());
           handle_exception(err);
+        } catch(const std::exception& err) {
+          log_warn("exception: {}", err.what());
+          handle_exception(exceptions::wrapped_exception());
         } catch (...) {
           log_warn("unknown exception");
           handle_exception(exceptions::wrapped_exception());

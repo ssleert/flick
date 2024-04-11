@@ -3,6 +3,8 @@ module;
 #include <xxhash.h>
 
 #include <string>
+#include <vector>
+#include <random>
 #include <string_view>
 
 #include "flick.hpp"
@@ -34,5 +36,24 @@ namespace crypto {
     const auto password_n_hash = vars::getenv().global_pow + std::string(pass);
 
     return password_n_hash == hash;
+  }
+
+  // TODO: rewrite normally
+  export fn random_chars(size_t len) -> std::vector<char> {
+    auto rd = std::random_device();
+    auto gen = std::mt19937(rd());
+    auto dist = std::uniform_int_distribution<char>(-127, 127);
+
+    auto seq = std::vector<char>(len);
+    for (size_t i = 0; i < len; ++i) {
+        seq[i] = dist(gen); // Generate a random byte
+    }
+
+    return seq;
+  }
+
+  export fn random_xxhash_str() -> std::string {
+    auto bytes = random_chars(128);
+    return get_xxhash_str(std::string_view(bytes.data(), bytes.size()));
   }
 }

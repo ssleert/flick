@@ -71,4 +71,31 @@ namespace exceptions {
           )
       {}
   };
+
+  export class access_token_is_not_expired : public wrapped_exception {
+    public:
+      access_token_is_not_expired()
+        : wrapped_exception(
+            "access token is not expired"
+          )
+      {}
+  };
+
+  export class access_token_incorrect : public wrapped_exception {
+    public:
+      access_token_incorrect()
+        : wrapped_exception(
+            "access token incorrect"
+          )
+      {}
+  };
+
+  export class refresh_token_expired : public wrapped_exception {
+    public:
+      refresh_token_expired()
+        : wrapped_exception(
+            "refresh token expired"
+          )
+      {}
+  };
 }

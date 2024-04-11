@@ -14,9 +14,12 @@ import db_pg;
 
 import controller_interface;
 import controller_hello_world;
-import controller_register_user;
 
+import controller_register_user;
 import service_add_user;
+
+import controller_login_user;
+import service_login_user;
 
 namespace server {
   export fn start() -> void {
@@ -31,9 +34,18 @@ namespace server {
       >
     >();
 
+    auto login_user = controller_login_user::controller<
+      service_login_user::service<
+        service_login_user::input,
+        service_login_user::output,
+        db_pg::database
+      >
+    >();
+
     std::vector<http_router::route<controller_interface::controller&>> routes = {
       {"/api/hello_world",   "GET",  hello_world},
       {"/api/register_user", "POST", register_user},
+      {"/api/login_user",    "POST", login_user},
     };
 
     auto router = http_router::router(routes);

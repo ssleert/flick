@@ -15,14 +15,10 @@ namespace validate {
     class Function,
     class... Args
   > fn validate_iterable(Function func, Args&... args) -> void {
-    for (const auto& e : {args...}) {
-      if (func(e)) {
-        throw exceptions::validation_error();
-      }
-    }
+    (func(args), ...);
   }
 
-  export fn registration_param(const std::string_view param) -> bool {
+  export fn registration_param_size(const std::string_view param) -> bool {
     const auto size = param.size();
     return (
       size > vars::registration_strings_max_size ||
@@ -47,6 +43,10 @@ namespace validate {
     }
 
     if(std::distance(at, str.cend()) < 5) {
+      throw exceptions::malformed_email();
+    }
+
+    if (std::distance(at, dot) < 1) {
       throw exceptions::malformed_email();
     }
   }
