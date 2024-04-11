@@ -108,9 +108,10 @@ namespace auth {
         }
 
         const auto tokens = gen_tokens_pair();
-        const auto& [_, new_refresh_token] = tokens;
+        const auto& [new_access_token, new_refresh_token] = tokens;
 
         this->storage.update_token_by_id(refresh_token_id, new_refresh_token, time_now);
+        this->temp.set_token(new_access_token, cache::token{user_id, time_now});
 
         return tokens;
       }

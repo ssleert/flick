@@ -15,7 +15,11 @@ namespace validate {
     class Function,
     class... Args
   > fn validate_iterable(Function func, Args&... args) -> void {
-    (func(args), ...);
+    for (const auto& e : {args...}) {
+      if (func(e)) {
+        throw exceptions::validation_error();
+      }
+    }
   }
 
   export fn registration_param_size(const std::string_view param) -> bool {
