@@ -75,6 +75,7 @@ namespace db_pg {
     static constexpr const char* find_token_id_n_date_by_token_stmt = "find_token_id_n_date_by_token";
     static constexpr const char* update_token_by_id_stmt = "update_token_by_id";
     static constexpr const char* get_user_id_by_email_n_password_hash_stmt = "get_user_id_by_email_n_password_hash";
+    static constexpr const char* create_post_stmt = "create_post";
 
     static fn prepare_add_user(pqxx::connection& c) -> void {
       c.prepare(add_user_stmt, R"(
@@ -123,12 +124,31 @@ namespace db_pg {
       )");
     }
 
+    static fn prepare_create_post(pqxx::connection& c) -> void {
+      c.prepare(create_post_stmt, R"(
+        INSERT INTO users_posts (
+          user_id, creation_date,
+          body, attachments, likes_amount,
+          dislikes_amount, comments_amount,
+          is_comments_disallowed
+        )
+        VALUES (
+          $1, $2,
+          $3, $4, $5,
+          $6, $7,
+          $8
+        )
+        RETURNING post_id
+      )");
+    }
+
     static fn init_connection(pqxx::connection& c) -> void {
       prepare_add_user(c);
       prepare_add_token(c);
       prepare_find_token_id_n_date_by_token(c);
       prepare_update_token_by_id(c);
       prepare_get_user_id_by_email_n_password_hash(c);
+      prepare_create_post(c);
     }
 
     private:
@@ -148,7 +168,7 @@ namespace db_pg {
           ))
       {}
 
-      fn add_user(const db::user& user) -> int32_t {
+      fn add_user(const db::input::user& user) -> int32_t {
         try {
           auto c = this->pool.get();
           defer (this->pool.put(c));
@@ -172,7 +192,7 @@ namespace db_pg {
         }
       }
 
-      fn add_token(const db::token& token) -> int32_t {
+      fn add_token(const db::input::token& token) -> int32_t {
         try {
           auto c = this->pool.get();
           defer (this->pool.put(c));
@@ -196,7 +216,7 @@ namespace db_pg {
         }
       }
 
-      fn find_token_id_n_date_by_token(const std::string_view token) -> db::token_id_n_date { 
+      fn find_token_id_n_date_by_token(const std::string_view token) -> db::output::token_id_n_date { 
         try {
           auto c = this->pool.get();
           defer (this->pool.put(c));
@@ -264,6 +284,33 @@ namespace db_pg {
           t.commit();
 
           return user_id;
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn create_post(const db::input::post& post) -> int32_t {
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          const auto post_id = t.exec_prepared1(create_post_stmt,
+              post.user_id,
+              ttime::to_epoch(post.creation_date),
+              post.body,
+              post.attachments,
+              post.likes_amount,
+              post.dislikes_amount,
+              post.comments_amount,
+              post.is_comments_disallowed
+          ).at(0).as<int32_t>();
+
+          t.commit();
+
+          return post_id;
         } catch (const std::exception& err) {
           log_warn("db: {}", err.what());
           throw exceptions::db_error();

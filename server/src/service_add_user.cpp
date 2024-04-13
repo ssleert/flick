@@ -94,7 +94,7 @@ namespace service_add_user {
       fn invoke(const input& data) -> output {
         const auto password_hash = crypto::hash_password(data.password);
 
-        const auto user = db::user{
+        const auto user = db::input::user{
           .email = data.email,
           .password_hash = password_hash,
           .nickname = data.username,

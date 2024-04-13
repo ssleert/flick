@@ -26,6 +26,9 @@ import service_login_user;
 import controller_refresh_tokens;
 import service_refresh_tokens;
 
+import controller_create_post;
+import service_create_post;
+
 namespace server {
   export fn start() -> void {
     const auto workers_amount = static_cast<int32_t>(std::thread::hardware_concurrency());
@@ -55,6 +58,17 @@ namespace server {
       service_refresh_tokens::service<
         service_refresh_tokens::input,
         service_refresh_tokens::output,
+        auth::provider<
+          db_pg::database,
+          cache_basic::cache_basic
+        >
+      >
+    >();
+
+    auto create_post = controller_create_post::controller<
+      service_create_post::service<
+        service_create_post::input,
+        service_create_post::output,
         db_pg::database,
         auth::provider<
           db_pg::database,
@@ -68,6 +82,7 @@ namespace server {
       {"/api/register_user",  "POST", register_user},
       {"/api/login_user",     "POST", login_user},
       {"/api/refresh_tokens", "POST", refresh_tokens},
+      {"/api/create_post",    "POST", create_post},
     };
 
     auto router = http_router::router(routes);

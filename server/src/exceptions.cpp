@@ -81,6 +81,15 @@ namespace exceptions {
       {}
   };
 
+  export class access_token_expired : public wrapped_exception {
+    public:
+      access_token_expired()
+        : wrapped_exception(
+            "access token expired"
+          )
+      {}
+  };
+
   export class access_token_incorrect : public wrapped_exception {
     public:
       access_token_incorrect()
@@ -114,6 +123,16 @@ namespace exceptions {
       headers_incorrect()
         : wrapped_exception(
             "headers incorrect",
+            http::status::unprocessable_entity
+          )
+      {}
+  };
+
+  export class auth_headers_incorrect : public wrapped_exception {
+    public:
+      auth_headers_incorrect()
+        : wrapped_exception(
+            "auth headers incorrect",
             http::status::unprocessable_entity
           )
       {}

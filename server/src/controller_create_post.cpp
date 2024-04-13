@@ -7,7 +7,7 @@ module;
 #include "logger_macro.hpp"
 #include "flick.hpp"
 
-export module controller_refresh_tokens;
+export module controller_create_post;
 
 import logger;
 import controller_interface;
@@ -15,31 +15,31 @@ import utils;
 import http;
 import exceptions;
 
-namespace controller_refresh_tokens {
+namespace controller_create_post {
   export template<
-    class refresh_tokens_service
+    class service_create_post
   > class controller : public controller_interface::controller {
     private:
-      refresh_tokens_service login_user;
+      service_create_post login_user;
 
     public:
       controller() 
-        : login_user(refresh_tokens_service())
+        : login_user(service_create_post())
       {}
 
       fn operator()(FCGX_Request& req) -> void override {
         http::status status = http::status::ok;
-        auto output_data = typename refresh_tokens_service::output(); 
+        auto output_data = typename service_create_post::output(); 
 
         const auto handle_exception = [&](auto err) {
-          output_data = typename refresh_tokens_service::output{
+          output_data = typename service_create_post::output{
             .error = err.what()
           };
           status = err.status_code;
         };
 
         try {
-          const auto input_data = refresh_tokens_service::input::from_request(req);
+          const auto input_data = service_create_post::input::from_request(req);
           output_data = this->login_user.invoke(input_data);
         } catch (const exceptions::wrapped_exception& err) {
           log_warn("wrapped_exception: {}", err.what());
@@ -54,7 +54,7 @@ namespace controller_refresh_tokens {
 
         utils::write_status(req, status);
         utils::write_http_headers(req, utils::custom_http_headers());
-        utils::write_http_headers(req, refresh_tokens_service::output::headers());
+        utils::write_http_headers(req, service_create_post::output::headers());
 
         utils::start_http_body(req);
         utils::write_bytes_to_http_request(req, output_data.to_bytes());

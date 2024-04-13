@@ -17,6 +17,8 @@ namespace vars {
     constexpr size_t registration_strings_max_size = 256;
     constexpr size_t registration_strings_min_size = 5;
     constexpr const char* default_avatar_img = "default_avatar";
+
+    constexpr const char* auth_header_name = "HTTP_AUTH_TOKEN";
   }
 
   export class env {

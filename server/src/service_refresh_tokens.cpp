@@ -19,7 +19,6 @@ import utils;
 import logger;
 import http;
 import ttime;
-import db;
 import vars;
 import validate;
 import crypto;
@@ -76,11 +75,9 @@ namespace service_refresh_tokens {
   export template<
     class input_data,
     class output_data,
-    class db_impl,
     class auth_impl
   > class service {
     private:
-      db_impl&   storage;
       auth_impl& auth;
 
     public:
@@ -88,8 +85,7 @@ namespace service_refresh_tokens {
       using output = output_data;
 
       service()
-        : storage(db_impl::get_instance()),
-          auth(auth_impl::get_instance())
+        : auth(auth_impl::get_instance())
       {}
 
       fn invoke(const input& data) -> output { 

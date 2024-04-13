@@ -92,7 +92,10 @@ target_sources(flick PUBLIC
   src/service_login_user.cpp
 
   src/controller_refresh_tokens.cpp
-  src/service_refresh_tokens.cpp)
+  src/service_refresh_tokens.cpp
+
+  src/controller_create_post.cpp
+  src/service_create_post.cpp)
 
 target_link_libraries(flick PRIVATE
                             ${FCGI_LIBRARIES}

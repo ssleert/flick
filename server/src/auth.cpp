@@ -1,5 +1,7 @@
 module;
 
+#include <fcgiapp.h>
+
 #include <string>
 #include <string_view>
 #include <utility>
@@ -58,7 +60,7 @@ namespace auth {
         const auto time_now = ttime::now();
 
         this->temp.set_token(access_token, cache::token{user_id, time_now});
-        this->storage.add_token(db::token{
+        this->storage.add_token(db::input::token{
           .user_id = user_id,
           .refresh_token = refresh_token,
           .ip_addr = ip_addr,
@@ -117,17 +119,55 @@ namespace auth {
         return tokens;
       }
 
-      fn is_valid_access_token(const std::string_view access_token) -> bool {
-        const auto& [user_id, token_date] = this->temp.get_token(access_token);
-        const auto time_now = ttime::now();
+      fn is_valid_access_token(const std::string_view access_token) -> void {
+        int32_t user_id = 0;
+        ttime::point token_date;
 
+        try { 
+          const auto [user, date] = this->temp.get_token(access_token);
+          user_id = user;
+          token_date = date;
+        } catch (const std::out_of_range& _) {
+          throw exceptions::access_token_incorrect();
+        }
+
+        const auto time_now = ttime::now();
         const auto time_diff = ttime::diff(time_now, token_date) / 1000;
 
         if (time_diff >= vars::getenv().access_token_life_seconds) {
-          return false;
+          throw exceptions::access_token_expired();
+        }   
+      }
+
+      fn get_user_id_from_access_token(const std::string_view access_token) -> int32_t { 
+        int32_t user_id = 0;
+        ttime::point token_date;
+
+        try { 
+          const auto [user, date] = this->temp.get_token(access_token);
+          user_id = user;
+          token_date = date;
+        } catch (const std::out_of_range& _) {
+          throw exceptions::access_token_incorrect();
         }
-         
-        return true;
+
+        const auto time_now = ttime::now();
+        const auto time_diff = ttime::diff(time_now, token_date) / 1000;
+
+        if (time_diff >= vars::getenv().access_token_life_seconds) {
+          throw exceptions::access_token_expired();
+        }   
+
+        return user_id;
+      }
+
+      fn from_request(const FCGX_Request& req) -> int32_t {
+        const auto http_auth_token = FCGX_GetParam("HTTP_AUTH_TOKEN", req.envp);
+        if (http_auth_token == nullptr) {
+          throw exceptions::auth_headers_incorrect();
+        }
+
+        return get_user_id_from_access_token(std::string_view(http_auth_token));
       }
   };
 }
