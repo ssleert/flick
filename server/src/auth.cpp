@@ -88,9 +88,10 @@ namespace auth {
           }
 
           this->temp.del_token(access_token);
+        } catch (const exceptions::access_token_is_not_expired& _) {
+          throw;
         } catch (const std::out_of_range& _) {
-          log_warn("access token incorrect");
-          throw exceptions::access_token_incorrect();
+          log_warn("access not found");
         } catch (const std::exception& err) {
           log_warn("auth: {}", err.what());
           throw exceptions::wrapped_exception();

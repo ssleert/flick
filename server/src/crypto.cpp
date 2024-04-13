@@ -53,7 +53,7 @@ namespace crypto {
   }
 
   export fn random_xxhash_str() -> std::string {
-    auto bytes = random_chars(128);
+    auto bytes = random_chars(384);
     return get_xxhash_str(std::string_view(bytes.data(), bytes.size()));
   }
 }
