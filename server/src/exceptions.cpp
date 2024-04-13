@@ -98,4 +98,24 @@ namespace exceptions {
           )
       {}
   };
+
+  export class user_not_found : public wrapped_exception {
+    public:
+      user_not_found()
+        : wrapped_exception(
+            "user not found",
+            http::status::not_found
+          )
+      {}
+  };
+
+  export class headers_incorrect : public wrapped_exception {
+    public:
+      headers_incorrect()
+        : wrapped_exception(
+            "headers incorrect",
+            http::status::unprocessable_entity
+          )
+      {}
+  };
 }

@@ -11,6 +11,8 @@ export module server;
 import fcgi_server;
 import http_router;
 import db_pg;
+import auth;
+import cache_basic;
 
 import controller_interface;
 import controller_hello_world;
@@ -38,7 +40,11 @@ namespace server {
       service_login_user::service<
         service_login_user::input,
         service_login_user::output,
-        db_pg::database
+        db_pg::database,
+        auth::provider<
+          db_pg::database,
+          cache_basic::cache_basic
+        >
       >
     >();
 

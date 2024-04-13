@@ -8,11 +8,11 @@ RUN apt install -y cmake ninja-build make
 RUN apt install -y clang-tools-18
 RUN apt install -y pkg-config
 
-COPY ./src/ /app/src
-COPY ./CMakeLists.txt /app
-COPY ./Makefile /app
-COPY ./.env /app
 COPY ./deps/ /app/deps
+COPY ./.env /app
+COPY ./Makefile /app
+COPY ./CMakeLists.txt /app
+COPY ./src/ /app/src
 
 WORKDIR /app
 

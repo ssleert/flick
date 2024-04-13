@@ -6,6 +6,7 @@ module;
 #include <condition_variable>
 #include <queue>
 #include <memory>
+#include <optional>
 
 #include "flick.hpp"
 #include "defer.hpp"
@@ -73,6 +74,7 @@ namespace db_pg {
     static constexpr const char* add_token_stmt = "add_token";
     static constexpr const char* find_token_id_n_date_by_token_stmt = "find_token_id_n_date_by_token";
     static constexpr const char* update_token_by_id_stmt = "update_token_by_id";
+    static constexpr const char* get_user_id_by_email_n_password_hash_stmt = "get_user_id_by_email_n_password_hash";
 
     static fn prepare_add_user(pqxx::connection& c) -> void {
       c.prepare(add_user_stmt, R"(
@@ -113,11 +115,20 @@ namespace db_pg {
       )");
     }
 
+    static fn prepare_get_user_id_by_email_n_password_hash(pqxx::connection& c) -> void {
+      c.prepare(get_user_id_by_email_n_password_hash_stmt, R"(
+        SELECT user_id
+        FROM users
+        WHERE email = $1 AND password_hash = $2
+      )");
+    }
+
     static fn init_connection(pqxx::connection& c) -> void {
       prepare_add_user(c);
       prepare_add_token(c);
       prepare_find_token_id_n_date_by_token(c);
       prepare_update_token_by_id(c);
+      prepare_get_user_id_by_email_n_password_hash(c);
     }
 
     private:
@@ -224,6 +235,35 @@ namespace db_pg {
           );
 
           t.commit();
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn get_user_id_by_email_n_password_hash(
+        const std::string_view email,
+        const std::string_view password_hash
+      ) -> std::optional<int32_t> {
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          int32_t user_id = 0;
+          try {
+            user_id = t.exec_prepared1(get_user_id_by_email_n_password_hash_stmt,
+                email, password_hash
+            ).at(0).as<int32_t>(); 
+          } catch (const pqxx::unexpected_rows& err) {
+            t.abort();
+            return std::nullopt;
+          }
+
+          t.commit();
+
+          return user_id;
         } catch (const std::exception& err) {
           log_warn("db: {}", err.what());
           throw exceptions::db_error();

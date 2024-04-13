@@ -32,7 +32,7 @@ namespace controller_register_user {
         auto output_data = typename add_user_service::output(); 
 
 
-        const auto handle_exception = [&](auto err){
+        const auto handle_exception = [&](auto err) {
           output_data = typename add_user_service::output{
             .error = err.what()
           };
