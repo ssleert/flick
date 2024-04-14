@@ -190,8 +190,7 @@ namespace utils {
     const auto content_length = get_http_param(req, "HTTP_CONTENT_LENGTH");
     const auto input_data_size = get_number_from_string_view<size_t>(content_length);
 
-    auto input_data = std::vector<uint8_t>();
-    input_data.reserve(input_data_size);
+    auto input_data = std::vector<uint8_t>(input_data_size);
     
     const auto success = FCGX_GetStr(reinterpret_cast<char*>(input_data.data()), input_data_size, req.in);
     if (success < 0) {

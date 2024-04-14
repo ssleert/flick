@@ -54,7 +54,7 @@ namespace db_pg {
         auto conn = std::move(this->connections.front());
         this->connections.pop();
 
-        return conn;
+        return std::move(conn);
       }
 
       fn put(std::unique_ptr<pqxx::connection>& conn) -> void {

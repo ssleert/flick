@@ -34,28 +34,27 @@ namespace service_create_post {
       static fn from_request(FCGX_Request& req) -> input;
 
       std::string_view access_token;
-      std::string_view body;
-      std::vector<std::string_view> attachments;
+      std::string body;
+      std::vector<std::string> attachments;
       bool is_comments_disallowed;
   };
 
   NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(input, body, attachments, is_comments_disallowed);
 
   fn input::from_request(FCGX_Request& req) -> input {
-    const auto access_token = utils::get_http_param(req, vars::auth_header_name);
-    const auto body = utils::read_request_body(req);
-    input input_data;
-
     try {
+      const auto access_token = utils::get_http_param(req, vars::auth_header_name);
+      const auto body = utils::read_request_body(req);
+
       json data = json::from_msgpack(body);
-      input_data = data.template get<input>();
+      auto input_data = data.template get<input>();
       input_data.access_token = access_token;
+
+      return input_data;
     } catch (const std::exception& err) {
       log_warn("msgpack unpack: {}", err.what());
       throw exceptions::validation_error();
     }
-
-    return input_data;
   }
 
   export class output {
@@ -99,7 +98,7 @@ namespace service_create_post {
           auth(auth_impl::get_instance())
       {}
 
-      fn invoke(const input& data) -> output { 
+      fn invoke(const input&& data) -> output { 
         const auto user_id = this->auth.get_user_id_from_access_token(data.access_token);
 
         const auto post_id = this->storage.create_post(
@@ -107,7 +106,7 @@ namespace service_create_post {
               .user_id = user_id,
               .creation_date = ttime::now(),
               .body = data.body,
-              .attachments = data.attachments,
+              .attachments = std::move(data.attachments),
               .likes_amount = 0,
               .dislikes_amount = 0,
               .comments_amount = 0,

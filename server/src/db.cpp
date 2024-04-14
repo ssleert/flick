@@ -34,7 +34,7 @@ namespace db {
         int32_t                       user_id;
         ttime::point                  creation_date;
         std::string_view              body;
-        std::vector<std::string_view> attachments;
+        std::vector<std::string>      attachments;
         int32_t                       likes_amount;
         int32_t                       dislikes_amount;
         int32_t                       comments_amount;

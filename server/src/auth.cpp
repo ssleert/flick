@@ -120,12 +120,10 @@ namespace auth {
       }
 
       fn is_valid_access_token(const std::string_view access_token) -> void {
-        int32_t user_id = 0;
         ttime::point token_date;
 
         try { 
-          const auto [user, date] = this->temp.get_token(access_token);
-          user_id = user;
+          const auto [_, date] = this->temp.get_token(access_token);
           token_date = date;
         } catch (const std::out_of_range& _) {
           throw exceptions::access_token_incorrect();

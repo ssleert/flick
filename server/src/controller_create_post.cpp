@@ -40,7 +40,7 @@ namespace controller_create_post {
 
         try {
           const auto input_data = service_create_post::input::from_request(req);
-          output_data = this->login_user.invoke(input_data);
+          output_data = this->login_user.invoke(std::move(input_data));
         } catch (const exceptions::wrapped_exception& err) {
           log_warn("wrapped_exception: {}", err.what());
           handle_exception(err);
