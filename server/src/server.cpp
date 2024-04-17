@@ -29,16 +29,23 @@ import service_refresh_tokens;
 import controller_create_post;
 import service_create_post;
 
+import controller_list_posts;
+import service_list_posts;
+
 namespace server {
   export fn start() -> void {
     const auto workers_amount = static_cast<int32_t>(std::thread::hardware_concurrency());
+
+    using db_impl = db_pg::database;
+    using cache_impl = cache_basic::cache_basic;
+    using auth_impl = auth::provider<db_impl, cache_impl>;
 
     auto hello_world = controller_hello_world::controller();
     auto register_user = controller_register_user::controller<
       service_add_user::service<
         service_add_user::input,
         service_add_user::output,
-        db_pg::database
+        db_impl
       >
     >();
 
@@ -46,11 +53,8 @@ namespace server {
       service_login_user::service<
         service_login_user::input,
         service_login_user::output,
-        db_pg::database,
-        auth::provider<
-          db_pg::database,
-          cache_basic::cache_basic
-        >
+        db_impl,
+        auth_impl
       >
     >();
 
@@ -58,10 +62,7 @@ namespace server {
       service_refresh_tokens::service<
         service_refresh_tokens::input,
         service_refresh_tokens::output,
-        auth::provider<
-          db_pg::database,
-          cache_basic::cache_basic
-        >
+        auth_impl
       >
     >();
 
@@ -69,11 +70,17 @@ namespace server {
       service_create_post::service<
         service_create_post::input,
         service_create_post::output,
-        db_pg::database,
-        auth::provider<
-          db_pg::database,
-          cache_basic::cache_basic
-        >
+        db_impl,
+        auth_impl
+      >
+    >();
+
+    auto list_posts = controller_list_posts::controller<
+      service_list_posts::service<
+        service_list_posts::input,
+        service_list_posts::output,
+        db_impl,
+        auth_impl
       >
     >();
 
@@ -83,6 +90,7 @@ namespace server {
       {"/api/login_user",     "POST", login_user},
       {"/api/refresh_tokens", "POST", refresh_tokens},
       {"/api/create_post",    "POST", create_post},
+      {"/api/list_posts",     "GET",  list_posts},
     };
 
     auto router = http_router::router(routes);

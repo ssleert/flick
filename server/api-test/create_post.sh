@@ -5,7 +5,7 @@ function create_post {
 
   local json_body='{
     "body": "test post",
-    "attachments": ["123", "123"],
+    "attachments": ["qwfsjklasfdlk", "wqafkjns<dfvazwslkdev"],
     "is_comments_disallowed": true
   }'
 
@@ -15,7 +15,7 @@ function create_post {
     -d "$(printf "${json_body}" | msgpack-cli encode)" \
     -H "auth-token: ${access_token}" \
     'https://localhost/api/create_post' \
-    | msgpack-cli decode --pp
+  | msgpack-cli decode --pp
 }
 
 create_post

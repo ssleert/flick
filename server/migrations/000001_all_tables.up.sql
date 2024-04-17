@@ -27,4 +27,3 @@ CREATE TABLE IF NOT EXISTS users_posts (
   comments_amount        INTEGER     NOT NULL,
   is_comments_disallowed BOOLEAN     NOT NULL
 );
-

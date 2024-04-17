@@ -5,6 +5,8 @@ module;
 
 #include "flick.hpp"
 
+#include <nlohmann/json.hpp>
+
 export module db;
 
 import ttime;
@@ -31,14 +33,14 @@ namespace db {
 
     class post {
       public:
-        int32_t                       user_id;
-        ttime::point                  creation_date;
-        std::string_view              body;
-        std::vector<std::string>      attachments;
-        int32_t                       likes_amount;
-        int32_t                       dislikes_amount;
-        int32_t                       comments_amount;
-        bool                          is_comments_disallowed;
+        int32_t                  user_id;
+        ttime::point             creation_date;
+        std::string_view         body;
+        std::vector<std::string> attachments;
+        int32_t                  likes_amount;
+        int32_t                  dislikes_amount;
+        int32_t                  comments_amount;
+        bool                     is_comments_disallowed;
     };
   }
 
@@ -48,5 +50,25 @@ namespace db {
         int32_t token_id;
         ttime::point token_date;
     };
+
+    class post_n_user {
+      public:
+        std::string              nickname;
+        std::string              avatar_img;
+
+        int32_t                  post_id;
+        ttime::point             creation_date;
+        std::string              body;
+        std::vector<std::string> attachments;
+        int32_t                  likes_amount;
+        int32_t                  dislikes_amount;
+        int32_t                  comments_amount;
+        bool                     is_comments_disallowed;
+    };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(post_n_user,
+      nickname, avatar_img, post_id, creation_date,
+      body, attachments, likes_amount, dislikes_amount,
+      comments_amount, is_comments_disallowed
+    )
   }
 }

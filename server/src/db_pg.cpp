@@ -76,6 +76,32 @@ namespace db_pg {
     static constexpr const char* update_token_by_id_stmt = "update_token_by_id";
     static constexpr const char* get_user_id_by_email_n_password_hash_stmt = "get_user_id_by_email_n_password_hash";
     static constexpr const char* create_post_stmt = "create_post";
+    static constexpr const char* list_posts_n_users_stmt = "list_posts_n_users";
+
+    static constexpr size_t array_prealloc_size = 32;
+    static fn convert_pg_string_to_string_array(const std::string_view arr_str) -> std::vector<std::string> {
+      auto strings = std::vector<std::string>();
+      strings.reserve(array_prealloc_size);
+
+      auto parser = pqxx::array_parser(arr_str);
+      
+      for (;;) {
+        const auto [type, value] = parser.get_next();
+        if (type == pqxx::array_parser::juncture::row_start) {
+          continue;
+        }
+
+        if (type == pqxx::array_parser::juncture::string_value) {
+          strings.push_back(value);
+        }
+
+        if (type == pqxx::array_parser::juncture::row_end) {
+          return strings;
+        }
+      }
+
+      return strings;
+    }
 
     static fn prepare_add_user(pqxx::connection& c) -> void {
       c.prepare(add_user_stmt, R"(
@@ -142,6 +168,22 @@ namespace db_pg {
       )");
     }
 
+    static fn prepare_list_posts_n_users(pqxx::connection& c) -> void {
+      c.prepare(list_posts_n_users_stmt, R"(
+        SELECT u.nickname, u.avatar_img,
+               up.post_id, up.creation_date,
+               up.body, up.attachments,
+               up.likes_amount, up.dislikes_amount,
+               up.comments_amount, up.is_comments_disallowed
+        FROM users_posts AS up
+        JOIN users AS u
+        ON up.user_id = u.user_id
+        ORDER BY up.creation_date DESC
+        OFFSET $1
+        LIMIT $2
+      )");
+    }
+
     static fn init_connection(pqxx::connection& c) -> void {
       prepare_add_user(c);
       prepare_add_token(c);
@@ -149,6 +191,7 @@ namespace db_pg {
       prepare_update_token_by_id(c);
       prepare_get_user_id_by_email_n_password_hash(c);
       prepare_create_post(c);
+      prepare_list_posts_n_users(c);
     }
 
     private:
@@ -311,6 +354,56 @@ namespace db_pg {
           t.commit();
 
           return post_id;
+        } catch (const std::exception& err) {
+          log_warn("db: {}", err.what());
+          throw exceptions::db_error();
+        }
+      }
+
+      fn list_posts_n_users(int32_t offset, int32_t limit) -> std::vector<db::output::post_n_user> { 
+        try {
+          auto c = this->pool.get();
+          defer (this->pool.put(c));
+
+          auto t = pqxx::work(*c);
+
+          auto rows = t.exec_prepared(list_posts_n_users_stmt, offset, limit);
+
+          auto posts_n_users = std::vector<db::output::post_n_user>();
+          posts_n_users.reserve(rows.size());
+
+          for (const auto& row : rows) {
+            const auto& [
+              nickname,        avatar_img,
+              post_id,         creation_date,
+              body,            attachments,
+              likes_amount,    dislikes_amount,
+              comments_amount, is_comments_disallowed
+            ] = row.as<
+              std::string, std::string,
+              int32_t,     int64_t,
+              std::string, std::string_view, //std::vector<std::string>,
+              int32_t,     int32_t,
+              int32_t,     bool
+            >();
+
+            posts_n_users.push_back(db::output::post_n_user{
+              .nickname = std::move(nickname),
+              .avatar_img = std::move(avatar_img),
+              .post_id = std::move(post_id),
+              .creation_date = ttime::from_epoch(creation_date),
+              .body = std::move(body),
+              .attachments = convert_pg_string_to_string_array(attachments),
+              .likes_amount = std::move(likes_amount),
+              .dislikes_amount = std::move(dislikes_amount),
+              .comments_amount = std::move(comments_amount),
+              .is_comments_disallowed = std::move(is_comments_disallowed),
+            });
+          }
+
+          t.commit();
+
+          return posts_n_users;
         } catch (const std::exception& err) {
           log_warn("db: {}", err.what());
           throw exceptions::db_error();
