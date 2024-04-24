@@ -85,12 +85,12 @@ namespace server {
     >();
 
     std::vector<http_router::route<controller_interface::controller&>> routes = {
-      {"/api/hello_world",    "GET",  hello_world},
-      {"/api/register_user",  "POST", register_user},
-      {"/api/login_user",     "POST", login_user},
-      {"/api/refresh_tokens", "POST", refresh_tokens},
-      {"/api/create_post",    "POST", create_post},
-      {"/api/list_posts",     "GET",  list_posts},
+      {"/api/v1/hello_world",    "GET",  hello_world},
+      {"/api/v1/register_user",  "POST", register_user},
+      {"/api/v1/login_user",     "POST", login_user},
+      {"/api/v1/refresh_tokens", "POST", refresh_tokens},
+      {"/api/v1/create_post",    "POST", create_post},
+      {"/api/v1/list_posts",     "GET",  list_posts},
     };
 
     auto router = http_router::router(routes);
