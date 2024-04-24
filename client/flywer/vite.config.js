@@ -15,7 +15,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "app"),
-      "@/shared": resolve(__dirname, "../shared"),
+      "#public": resolve(__dirname, "public"),
+      "#shared": resolve(__dirname, "shared"),
       "#root": resolve(__dirname)
     }
   },

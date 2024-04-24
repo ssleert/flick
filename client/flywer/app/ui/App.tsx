@@ -1,20 +1,25 @@
-import { ref } from "hywer";
-import Api from "@/data/api/Api";
+import { createRouterContext, Router } from "hywer/x/router";
 
-import css from "@/ui/App.module.less";
+import NavBar from "@/ui/NavBar/NavBar"
+
+const routes = {
+  "/404": () => <>404 page</>,
+  "/": () => <>home</>,
+  "/messages": () => <>messages</>,
+  "/new": () => <>new</>,
+  "/search": () => <>search</>,
+  "/settings": () => <>settings</>,
+  "/reg": () => <>reg</>,
+  "/login": () => <>login</>,
+}
 
 const App = () => {
-  const counter = ref(0);
+  createRouterContext(routes);
 
-  (async () => {
-    console.log(await Api.registerUser("asd@gma123il.com", "asasdasd123d", "as123dasdasd"))
-  })()
-
-  return <div class={css.App}>
-    {counter}
-    <button class={css.Increment} onClick={() => counter.val++}>+</button>
-    <button onClick={() => counter.val--}>-</button>
-  </div>
+  return <>
+    <NavBar />
+    <Router />
+  </>
 }
 
 export default App

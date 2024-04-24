@@ -1,7 +1,11 @@
-import App from "@/ui/App"
+import App from "@/ui/App";
+import "#shared/css/root.less";
 
-document.getElementById("app")?.append(
+const app = document.getElementById("app")!;
+app.classList.add("LightThemeColors");
+
+app.append(
   ...<>
     <App />
   </>
-)
+);
