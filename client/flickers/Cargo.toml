@@ -10,3 +10,5 @@ name="flickers"
 path = "app/main.rs"
 
 [dependencies]
+handlebars = "5.1.2"
+rocket = "0.5.0"

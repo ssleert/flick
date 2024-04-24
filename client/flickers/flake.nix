@@ -15,6 +15,10 @@
           cargo
           rust-analyzer
           rustfmt
+
+          lessc
+          nodePackages_latest.less-plugin-clean-css
+          clean-css-cli
         ];
       in
       {
