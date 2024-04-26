@@ -1,100 +1,91 @@
-.Registration { 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 30px;
-  gap: 15px;
+.Page {
+  user-select: none;
 
-  position: absolute;
-  left: calc(50% - 399px/2 - 0.5px);
-  top: calc(50% - 370px/2);
+  .Registration {
+    padding: 30px; 
+    width: 339px;
 
-  background: #FFFFFF;
-  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
-  border-radius: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3D(-50%, -50%, 0);
+    will-change: transform;
 
-  .Window {
-    .Title {
-      display: flex;
-      align-items: center;
-      padding: 0px 0px 15px;
-      gap: 10px;
+    background: var(--color-background-main);
+    box-shadow: var(--color-default-shadow-main);
+    border-radius: 20px;
 
-      margin-bottom: 10px;
-
-      .Text {
-        font-weight: 600;
-        font-size: 15px;
-        line-height: 18px;
-
-        color: #000000;
-      }
-    }
-
-    .Info {
-      font-weight: 600;
-      font-size: 25px;
-      line-height: 30px;
-
-      color: #000000;
-    }
-
-    .InputFields {
-      .Field {
-        position: relative;
-        display: block;
-        height: 45px;
-
-        background: #F4F4F4;
-        border-radius: 15px;
-
+    .Window {
+      .Title {
+        display: flex;
+        align-items: center;
+        padding-bottom: 15px;
         margin-bottom: 10px;
-        margin-top: 10px;
 
-        img {
-          position: absolute;
-          left: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 24px;
-          height: 24px;
-        }
-
-        input {
-          padding-left: 48px;
-          font-weight: 500;
-          font-size: 17px;
-          line-height: 21px;
-          color: #000000;
-
-          outline: none;
-          border: none;
-          background: none;
+        .Text {
+          padding-left: 10px;
+          font-weight: 600;
+          font-size: 15px;
+          color: var(--color-text-main);
         }
       }
-    }
 
-    .Button {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0px;
-      gap: 10px;
+      .Info {
+        font-weight: 600;
+        font-size: 25px;
+        line-height: 30px;
+        color: var(--color-text-main);
+      }
 
-      width: 339px;
-      height: 45px;
+      .InputFields {
+        margin-top: 24px;
+        margin-bottom: 24px;
 
-      background: #3583E5;
-      border-radius: 15px;
-      border: none;
+        .Field {
+          position: relative;
+          height: 45px;
+          width: 339px;
+          background: var(--color-field-main);
+          border-radius: 15px;
+          margin: 18px 0;
 
-      font-style: normal;
-      font-weight: 500;
-      font-size: 17px;
-      line-height: 21px;
-      color: #FFFFFF;
-    }
+          img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            filter: var(--color-filter-icon-main)
+          }
+
+          input {
+            margin-top: 11px;
+            padding-left: 40px;
+            font-weight: 500;
+            font-size: 17px;
+            color: var(--color-text-main);
+            outline: none;
+            border: none;
+            background: none;
+          }
+        }
+      }
+
+      .Button {
+        width: 339px;
+        height: 45px;
+        background: var(--color-blue-main);
+        border-radius: 15px;
+        border: none;
+        font-weight: 500;
+        font-size: 17px;
+        color: var(--color-background-main);
+
+        &:active {
+          background: var(--color-blue-darker-main);
+        }
+      }
+    }  
   }
 }

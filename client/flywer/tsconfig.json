@@ -3,6 +3,8 @@
     "./app/externals.d.ts"
   ],
   "compilerOptions": {
+    "types": ["vite/client"],
+
     // Enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
