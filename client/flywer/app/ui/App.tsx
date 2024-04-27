@@ -1,25 +1,23 @@
 import { createRouterContext, Router } from "hywer/x/router";
 
-import NavBar from "@/ui/NavBar/NavBar"
+import NavBar from "@/ui/NavBar/NavBar";
+import { routes } from "@/ui/routes";
 
-import Registration from "@/ui/pages/Registration/Registration";
+import css from "./App.module.less";
 
 const App = () => {
-  const routes = {
-    "/404": () => <>404 page</>,
-    "/": () => <>home</>,
-    "/messages": () => <>messages</>,
-    "/new": () => <>new</>,
-    "/search": () => <>search</>,
-    "/settings": () => <>settings</>,
-    "/reg": () => <Registration />,
-    "/login": () => <>login</>,
-  };
   createRouterContext(routes);
 
-  return <>
-    <Router />
-  </>
+  return (
+    <div class={css.Page}>
+      <header class={css.NavBar}>
+        <NavBar />
+      </header>
+      <main class={css.Content}>
+        <Router />
+      </main>
+    </div>
+  )
 }
 
 export default App

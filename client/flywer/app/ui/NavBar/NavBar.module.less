@@ -1,16 +1,39 @@
 .NavBar {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 15px;
-  gap: 10px;
-  top: calc(50% - 330px/2);
-  background: #F1F1F1;
-  border: 1px solid #DFDFDF;
+  user-select: none;
+
+  position: absolute;
+  left: 27px;
+  top: 50%;
+  transform: translate3D(0, -50%, 0);
+
+  background: var(--color-flat-main);
+  border: 1px solid var(--color-flat-stroke-main);
   border-radius: 25px;
 
-  .Route {
-    color: red;
+  .Links {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 15px 0px 15px 0px;
+
+    .Route { 
+      margin: 0 15px;
+      
+      .Icon {
+        width: 32px;
+        padding: 10px 10px 3px;
+      }
+
+      &:hover {
+        background: var(--color-blue-main);
+        border-radius: 15px;
+
+        .Icon {
+          filter: var(--color-filter-icon-invert-main);
+        }
+      }
+    }
   }
 }
