@@ -1,7 +1,7 @@
 import { Link } from "hywer/x/router";
 
 import Icon from "@/ui/utils/Icon";
-import MailIconSrc from "#shared/img/mail-icon.svg";
+import TelescopeIconSrc from "#shared/img/telescope-icon.svg";
 import SettingsIconSrc from "#shared/img/settings-icon.svg";
 import SearchIconSrc from "#shared/img/search-icon.svg";
 import PlusIconSrc from "#shared/img/plus-icon.svg";
@@ -16,7 +16,7 @@ const NavBar = () => {
         <Link path="/" class={css.Route}>
           <Icon aspect-ratio={[1, 1]} 
                 class={css.Icon}
-                src={MailIconSrc} />
+                src={TelescopeIconSrc} />
         </Link>
         <Link path="/messages" class={css.Route}>
           <Icon aspect-ratio={[1, 1]} 

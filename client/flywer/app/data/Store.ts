@@ -1,8 +1,9 @@
 import Auth from "@/data/auth/Auth";
+import Api from "@/data/api/Api";
 
 class Store {
-  private auth = new Auth(); 
+  private auth = new Auth(Api);
 };
 
-const StoreState = new Store();
-export default StoreState;
+const StoreInstance = new Store();
+export default StoreInstance;

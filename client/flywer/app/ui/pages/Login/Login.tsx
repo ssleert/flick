@@ -25,31 +25,35 @@ const Login = () => {
             Authentication
           </p>
 
-          <div class={css.InputFields}>
-            <div class={css.Field}>
-              <Icon aspect-ratio={[1, 1]} 
-                    src={MailIconSrc} />
-              <input type="text"
-                     placeholder="nickname" />
+          <form onSubmit={(e: Event) => (e.preventDefault(), console.log("swag"))}>
+            <div class={css.InputFields}>
+              <div class={css.Field}>
+                <Icon aspect-ratio={[1, 1]} 
+                      src={MailIconSrc}
+                      class={css.Icon} />
+                <input type="email"
+                       placeholder="example@mail.com" />
+              </div>
+
+              <div class={css.Field}>
+                <Icon aspect-ratio={[1, 1]} 
+                      src={LockIconSrc}
+                      class={css.Icon} />
+                <input type="password"
+                       placeholder="password" />
+              </div>
             </div>
 
-            <div class={css.Field}>
-              <Icon aspect-ratio={[1, 1]} 
-                    src={MailIconSrc} />
-              <input type="text"
-                     placeholder="example@mail.com" />
+            <div class={css.RegRedirectWrapper}>
+              <Link path={routeNames.reg} class={css.ToLoginText}>
+                Doesn't have an account?
+              </Link>
             </div>
-          </div>
 
-          <div class={css.RegRedirectWrapper}>
-            <Link path={routeNames.reg} class={css.ToLoginText}>
-              Doesn't have an account?
-            </Link>
-          </div>
-
-          <button class={css.Button}>
-            Authenticate
-          </button>
+            <button class={css.Button} type="submit">
+              Authenticate
+            </button>
+          </form>
         </div>
       </div>
     </div>

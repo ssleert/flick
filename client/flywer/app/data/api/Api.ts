@@ -12,7 +12,7 @@ export class RegisterUserResponse {
   ) {};
 };
 
-class Api {
+export class Api {
   public static readonly RequestError = "request failed";
   public static isError(resp: ApiResponse): boolean {
     return resp.error != "";
@@ -33,7 +33,7 @@ class Api {
     }
   }
 
-  public async registerUser(email: string, username: string, password: string): Promise<RegisterUserResponse> {
+  public async registerUser(username: string, email: string, password: string): Promise<RegisterUserResponse> {
     const resp = await this.getResponse("POST", `/v1/register_user?email=${email}&username=${username}&password=${password}`);
     if (resp.error != "") {
       return new RegisterUserResponse(resp.error);

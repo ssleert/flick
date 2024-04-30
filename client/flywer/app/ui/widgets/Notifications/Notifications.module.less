@@ -1,0 +1,96 @@
+.NotificationsList {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 22px;
+  max-width: 450px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .NotificationContainer {
+    @keyframes NotificationAppearAnimation {
+      from {
+        transform: translate3D(100%, 0, 0);
+      }
+      to {
+        transform: translate3D(0, 0, 0);
+      }
+    }
+
+    animation: NotificationAppearAnimation 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+
+    transform: translateZ(0);
+    position: relative;
+    padding: 5px;
+    margin-inline-start: auto;
+
+    .CloseButton {
+      background: var(--color-flat-main);
+      display: none;
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: 0;
+      top: 0;
+      border: 1px solid var(--color-flat-stroke-main);
+      border-radius: 100px;
+
+      &:hover {
+        background: var(--color-red-main);
+        border-color: var(--color-red-darker-main);
+        color: var(--color-background-main);
+      }
+    }
+
+    &:hover {
+      .CloseButton {
+        display: block;
+      }
+    }
+
+    .Notification {
+      width: fit-content;
+      padding: 11px 15px;
+      background: var(--color-flat-main);
+      border: 1px solid var(--color-flat-stroke-main);
+      border-radius: 20px;
+
+      .Header {
+        display: flex;
+        align-items: center;
+
+        .Status {
+          width: 15px;
+          height: 15px;
+          border-style: solid;
+          border-width: 1px;
+          border-radius: 100px;
+
+          &.StatusInfo { background: var(--color-blue-main);   border-color: var(--color-blue-darker-main);   }
+          &.StatusGood { background: var(--color-green-main);  border-color: var(--color-green-darker-main);  }
+          &.StatusWarn { background: var(--color-yellow-main); border-color: var(--color-yellow-darker-main); }
+          &.StatusBad  { background: var(--color-red-main);    border-color: var(--color-red-darker-main);    }
+        }
+
+        .Text {
+          margin-left: 8px;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 19px;
+          line-height: 24px;
+          color: var(--color-text-main);
+        }
+      }
+
+      .Content {
+        margin-top: 3px;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        color: var(--color-text-main);
+      }
+    }
+  }
+}
