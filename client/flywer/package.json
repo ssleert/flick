@@ -6,17 +6,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@msgpack/msgpack": "^3.0.0-beta2",
-    "hywer": "latest"
+    "hywer": "^0.0.26",
+    "msgpackr": "^1.10.1"
   },
   "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.27.0",
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "less": "^4.2.0",
     "postcss-color-mix": "^1.1.0",
     "postcss-less": "^6.0.0",
     "postcss-nested": "^6.0.1",
-    "postcss-preset-env": "^9.5.5",
+    "postcss-preset-env": "^9.5.9",
+    "prettier": "^3.2.5",
     "typescript": "^5.4.5",
-    "vite": "^5.1.4"
+    "vite": "^5.2.10"
   }
 }

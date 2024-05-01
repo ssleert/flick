@@ -1,16 +1,20 @@
 import { defineConfig } from "vite"
-import basicSsl from '@vitejs/plugin-basic-ssl'
 import { resolve } from "path"
+
+import ssl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   target: ["es2015", "firefox54", "safari13"],
+
+  cssMinify: "lightningcss",
+  minify: "terser",
   esbuild: {
     jsx: "automatic",
     jsxImportSource: "hywer",
   },
   plugins: [
-    basicSsl()
+    ssl(),
   ],
   resolve: {
     alias: {

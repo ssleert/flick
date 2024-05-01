@@ -1,5 +1,5 @@
 import Constants from "@/data/Constants";
-import { decodeAsync as msgpackDecodeAsync } from "@msgpack/msgpack" 
+import { unpack as msgpackUnpack } from 'msgpackr/unpack';
 
 export interface ApiResponse {
   error: string;
@@ -31,12 +31,13 @@ export class Api {
       const resp = await fetch(Constants.apiUrl + path, {
         method: method,
       });
-      const body = await msgpackDecodeAsync(resp.body as any) as any;
+      const body = await msgpackUnpack(await resp.arrayBuffer());
       if (body["error"] === undefined) {
         return {error: Api.RequestError};
       }
       return body;
     } catch (err) {
+      console.log(err);
       return {error: Api.RequestError};
     }
   }
