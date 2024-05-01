@@ -8,22 +8,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
+  transition: display 1s linear;
+
   .NotificationContainer {
-    @keyframes NotificationAppearAnimation {
+    @keyframes AppearAnimation {
       from {
         transform: translate3D(100%, 0, 0);
+
       }
       to {
         transform: translate3D(0, 0, 0);
       }
     }
 
-    animation: NotificationAppearAnimation 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    animation: AppearAnimation 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000);
 
     transform: translateZ(0);
     position: relative;
     padding: 5px;
-    margin-inline-start: auto;
 
     .CloseButton {
       background: var(--color-flat-main);
@@ -50,6 +52,7 @@
     }
 
     .Notification {
+      margin-inline-start: auto;
       width: fit-content;
       padding: 11px 15px;
       background: var(--color-flat-main);

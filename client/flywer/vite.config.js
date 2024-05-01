@@ -4,7 +4,7 @@ import { resolve } from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  target: "firefox54",
+  target: ["es2015", "firefox54", "safari13"],
   esbuild: {
     jsx: "automatic",
     jsxImportSource: "hywer",

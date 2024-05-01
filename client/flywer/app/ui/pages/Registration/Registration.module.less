@@ -1,15 +1,18 @@
 .Page {
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
 
   .Registration {
-    padding: 30px; 
-    width: 339px;
+    transform: translateZ(0);
 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3D(-50%, -50%, 0);
-    will-change: transform;
+    padding: 30px; 
+    width: fit-content;
+    height: fit-content;
+    
 
     background: var(--color-background-main);
     box-shadow: var(--color-default-shadow-main);

@@ -2,7 +2,7 @@ import Auth from "@/data/auth/Auth";
 import Api from "@/data/api/Api";
 
 class Store {
-  private auth = new Auth(Api);
+  public auth = new Auth(Api);
 };
 
 const StoreInstance = new Store();

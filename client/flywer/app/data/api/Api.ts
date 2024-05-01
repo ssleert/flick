@@ -12,6 +12,14 @@ export class RegisterUserResponse {
   ) {};
 };
 
+export class LoginUserResponse {
+  constructor(
+    public error: string = "",
+    public accessToken: string = "",
+    public refreshToken: string = "",
+  ) {};
+};
+
 export class Api {
   public static readonly RequestError = "request failed";
   public static isError(resp: ApiResponse): boolean {
@@ -39,7 +47,22 @@ export class Api {
       return new RegisterUserResponse(resp.error);
     }
 
-    return new RegisterUserResponse(resp.error, (resp as any)["user_id"] ?? 0);
+    return new RegisterUserResponse("", (resp as any)["user_id"] ?? 0);
+  }
+
+  public async loginUser(email: string, password: string): Promise<LoginUserResponse> { 
+    const resp = await this.getResponse("POST", `/v1/login_user?email=${email}&password=${password}`);
+    if (resp.error != "") {
+      return new LoginUserResponse(resp.error)
+    }
+
+    const data = (resp as any);
+
+    return new LoginUserResponse(
+      resp.error, 
+      data["access_token"], 
+      data["refresh_token"]
+    );
   }
 };
 

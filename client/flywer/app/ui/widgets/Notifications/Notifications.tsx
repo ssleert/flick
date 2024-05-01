@@ -23,7 +23,7 @@ const Notification = ({ header, body, status }: NotificationProps) => {
         class={css.CloseButton}
         onClick={(e: Event) => (e.target as HTMLElement)?.parentElement?.remove()}
       >
-        X
+        X {/* TODO: add icon */}
       </button>
 
       <div class={css.Notification}>
