@@ -3,23 +3,23 @@ import { addNotification } from "@/ui/widgets/Notifications/Notifications";
 
 interface ResponseWithError {
   error: string;
-};
+}
 
 const requestNotificationWrapper = <T extends ResponseWithError>(obj: T): T => {
   if (obj.error == Api.RequestError) {
     addNotification(
-      "bad", 
-      "Request Error", 
+      "bad",
+      "Request Error",
       "Request to backend failed. Check network connection or browser console.",
     );
 
     return obj;
   }
 
-  if (obj.error != "") { 
+  if (obj.error != "") {
     addNotification(
-      "bad", 
-      "Backend Error", 
+      "bad",
+      "Backend Error",
       "Internal Backend Error: " + obj.error,
     );
 
@@ -27,6 +27,6 @@ const requestNotificationWrapper = <T extends ResponseWithError>(obj: T): T => {
   }
 
   return obj;
-}
+};
 
 export default requestNotificationWrapper;

@@ -23,12 +23,15 @@ const Registration = () => {
 
   const validateFields = () => {
     return (
-      (nickname.val.length >= 5 && nickname.val.length <= 2048) && 
-      (password.val.length > 5 && password.val.length <= 2048) && 
-      (email.val.length > 5 && email.val.length <= 2048)
+      nickname.val.length >= 5 &&
+      nickname.val.length <= 2048 &&
+      password.val.length > 5 &&
+      password.val.length <= 2048 &&
+      email.val.length > 5 &&
+      email.val.length <= 2048
     );
-  }
-  
+  };
+
   const onFormSubmit = async (e: Event) => {
     e.preventDefault();
 
@@ -45,54 +48,65 @@ const Registration = () => {
       return;
     }
 
-    addNotification("info", "Account Created", "Your brand new Flick account created!");
+    addNotification(
+      "info",
+      "Account Created",
+      "Your brand new Flick account created!",
+    );
 
     navigateTo(routeNames.login);
-  }
+  };
 
   return (
     <div class={css.Page}>
       <div class={css.Registration}>
         <div class={css.Window}>
           <div class={css.Title}>
-            <Icon aspect-ratio={[1, 1]} 
-                  src={FlickLogoSrc} />
-            <h3 class={css.Text}>
-              Flick
-            </h3>
+            <Icon aspect-ratio={[1, 1]} src={FlickLogoSrc} />
+            <h3 class={css.Text}>Flick</h3>
           </div>
 
-          <p class={css.Info}>
-            Account Creation
-          </p>
+          <p class={css.Info}>Account Creation</p>
 
           <form onSubmit={onFormSubmit}>
             <div class={css.InputFields}>
               <div class={css.Field}>
-                <Icon aspect-ratio={[1, 1]} 
-                      src={UserIconSrc}
-                      class={css.Icon} />
-                <input type="text"
-                       placeholder="nickname"
-                       onInput={bindToRef(nickname)} />
+                <Icon
+                  aspect-ratio={[1, 1]}
+                  src={UserIconSrc}
+                  class={css.Icon}
+                />
+                <input
+                  type="text"
+                  placeholder="nickname"
+                  onInput={bindToRef(nickname)}
+                />
               </div>
 
               <div class={css.Field}>
-                <Icon aspect-ratio={[1, 1]} 
-                      src={MailIconSrc}
-                      class={css.Icon} />
-                <input type="email"
-                       placeholder="example@mail.com"
-                       onInput={bindToRef(email)}/>
+                <Icon
+                  aspect-ratio={[1, 1]}
+                  src={MailIconSrc}
+                  class={css.Icon}
+                />
+                <input
+                  type="email"
+                  placeholder="example@mail.com"
+                  onInput={bindToRef(email)}
+                />
               </div>
 
               <div class={css.Field}>
-                <Icon aspect-ratio={[1, 1]} 
-                      src={LockIconSrc}
-                      class={css.Icon} />
-                <input type="password"
-                       placeholder="password"
-                       onInput={bindToRef(password)}/>
+                <Icon
+                  aspect-ratio={[1, 1]}
+                  src={LockIconSrc}
+                  class={css.Icon}
+                />
+                <input
+                  type="password"
+                  placeholder="password"
+                  onInput={bindToRef(password)}
+                />
               </div>
             </div>
 
@@ -110,6 +124,6 @@ const Registration = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Registration;

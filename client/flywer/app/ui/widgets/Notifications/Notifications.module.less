@@ -14,14 +14,13 @@
     @keyframes AppearAnimation {
       from {
         transform: translate3D(100%, 0, 0);
-
       }
       to {
         transform: translate3D(0, 0, 0);
       }
     }
 
-    animation: AppearAnimation 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    animation: AppearAnimation 0.7s cubic-bezier(0.215, 0.61, 0.355, 1);
 
     transform: translateZ(0);
     position: relative;
@@ -70,10 +69,22 @@
           border-width: 1px;
           border-radius: 100px;
 
-          &.StatusInfo { background: var(--color-blue-main);   border-color: var(--color-blue-darker-main);   }
-          &.StatusGood { background: var(--color-green-main);  border-color: var(--color-green-darker-main);  }
-          &.StatusWarn { background: var(--color-yellow-main); border-color: var(--color-yellow-darker-main); }
-          &.StatusBad  { background: var(--color-red-main);    border-color: var(--color-red-darker-main);    }
+          &.StatusInfo {
+            background: var(--color-blue-main);
+            border-color: var(--color-blue-darker-main);
+          }
+          &.StatusGood {
+            background: var(--color-green-main);
+            border-color: var(--color-green-darker-main);
+          }
+          &.StatusWarn {
+            background: var(--color-yellow-main);
+            border-color: var(--color-yellow-darker-main);
+          }
+          &.StatusBad {
+            background: var(--color-red-main);
+            border-color: var(--color-red-darker-main);
+          }
         }
 
         .Text {

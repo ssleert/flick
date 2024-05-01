@@ -21,4 +21,4 @@ export const routes = {
   [routeNames.settings]: () => <>settings</>,
   [routeNames.reg]: () => <Registration />,
   [routeNames.login]: () => <Login />,
-}
+};

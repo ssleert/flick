@@ -14,33 +14,23 @@ const NavBar = () => {
     <div class={css.NavBar}>
       <div class={css.Links}>
         <Link path="/" class={css.Route}>
-          <Icon aspect-ratio={[1, 1]} 
-                class={css.Icon}
-                src={TelescopeIconSrc} />
+          <Icon aspect-ratio={[1, 1]} class={css.Icon} src={TelescopeIconSrc} />
         </Link>
         <Link path="/messages" class={css.Route}>
-          <Icon aspect-ratio={[1, 1]} 
-                class={css.Icon}
-                src={BubblesIconSrc} />
+          <Icon aspect-ratio={[1, 1]} class={css.Icon} src={BubblesIconSrc} />
         </Link>
         <Link path="/new" class={css.Route}>
-          <Icon aspect-ratio={[1, 1]} 
-                class={css.Icon}
-                src={PlusIconSrc} />
+          <Icon aspect-ratio={[1, 1]} class={css.Icon} src={PlusIconSrc} />
         </Link>
         <Link path="/search" class={css.Route}>
-          <Icon aspect-ratio={[1, 1]} 
-                class={css.Icon}
-                src={SearchIconSrc} />
+          <Icon aspect-ratio={[1, 1]} class={css.Icon} src={SearchIconSrc} />
         </Link>
         <Link path="/settings" class={css.Route}>
-          <Icon aspect-ratio={[1, 1]} 
-                class={css.Icon}
-                src={SettingsIconSrc} />
+          <Icon aspect-ratio={[1, 1]} class={css.Icon} src={SettingsIconSrc} />
         </Link>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default NavBar;

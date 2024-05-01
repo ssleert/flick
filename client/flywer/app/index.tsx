@@ -5,4 +5,4 @@ const app = document.getElementById("app")!;
 app.classList.add("LightThemeColors");
 app.classList.add("AppFonts");
 
-app.append(<App /> as any);
+app.append((<App />) as any);

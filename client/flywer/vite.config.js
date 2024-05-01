@@ -5,7 +5,7 @@ import ssl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  target: ["es2015", "firefox54", "safari13"],
+  target: ["esnext"],
 
   cssMinify: "lightningcss",
   minify: "terser",
